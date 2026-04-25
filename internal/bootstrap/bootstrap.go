@@ -6,10 +6,17 @@ package bootstrap
 
 import (
 	"github.com/wantnotshould/byelog/conf"
+	"github.com/wantnotshould/byelog/internal/cache/redis"
 	"github.com/wantnotshould/byelog/internal/logger"
 )
 
 func Run() {
 	conf.Init()
 	logger.Init(conf.Get().Logger)
+	redis.Init(conf.Get().Redis)
+}
+
+func Release() {
+	redis.DB().Close()
+	logger.Close()
 }

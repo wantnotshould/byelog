@@ -18,6 +18,7 @@ func main() {
 	flag.Parse()
 
 	bootstrap.Run()
+	defer bootstrap.Release()
 
 	fmt.Println("hello, byelog")
 }
