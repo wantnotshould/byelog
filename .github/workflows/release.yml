@@ -24,6 +24,15 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: 1.26
+      
+      - name: Install dependencies and Generate code
+        run: |
+          go install entgo.io/ent/cmd/ent@latest
+          go install github.com/google/wire/cmd/wire@latest
+          
+          go generate ./internal/ent/...
+          
+          cd internal/wire && $(go env GOPATH)/bin/wire && cd ../..
 
       - name: Set version env
         run: |
@@ -35,6 +44,7 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
+          go mod tidy
           mkdir -p dist
           FILENAME=gt-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
           if [ "${{ matrix.goos }}" = "windows" ]; then
