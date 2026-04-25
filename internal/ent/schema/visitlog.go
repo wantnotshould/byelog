@@ -38,7 +38,8 @@ func (VisitLog) Fields() []ent.Field {
 			MaxLen(512).
 			Comment("Request URL path"),
 
-		field.Text("query").
+		field.String("query").
+			MaxLen(1024).
 			Optional().
 			Comment("Query string"),
 
@@ -47,14 +48,40 @@ func (VisitLog) Fields() []ent.Field {
 			Optional().
 			Comment("Page title"),
 
-		field.Text("referer").
+		field.String("referer").
+			MaxLen(1024).
 			Optional().
 			Comment("Referrer URL"),
 
-		field.String("ua").
-			MaxLen(512).
+		field.String("os").
+			MaxLen(128).
 			Optional().
-			Comment("User-Agent string"),
+			Comment("OS name"),
+
+		field.String("browser").
+			MaxLen(128).
+			Optional().
+			Comment("Browser name"),
+
+		field.String("browser_version").
+			MaxLen(64).
+			Optional().
+			Comment("Full version"),
+
+		field.String("device_type").
+			MaxLen(32).
+			Optional().
+			Comment("General category"),
+
+		field.String("device_model").
+			MaxLen(128).
+			Optional().
+			Comment("Hardware info"),
+
+		field.String("engine").
+			MaxLen(64).
+			Optional().
+			Comment("Rendering engine"),
 
 		field.Bool("is_bot").
 			Default(false).
@@ -69,8 +96,18 @@ func (VisitLog) Fields() []ent.Field {
 
 func (VisitLog) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("created_at"),
 		index.Fields("ip"),
+		index.Fields("created_at"),
+
+		index.Fields("created_at", "path").
+			Annotations(entsql.PrefixColumn("path", 128)),
+
+		index.Fields("created_at", "referer").
+			Annotations(entsql.PrefixColumn("referer", 128)),
+
+		index.Fields("created_at", "device_type", "is_bot"),
+
+		index.Fields("ip", "created_at"),
 	}
 }
 
