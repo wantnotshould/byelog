@@ -4,8 +4,17 @@
 
 package main
 
-import "fmt"
+import (
+	"flag"
+	"fmt"
 
-func main(){
+	"github.com/wantnotshould/byelog/cmd/flags"
+)
+
+func main() {
+	flag.StringVar(&flags.Data, "data", "data", "Data directory")
+	flag.BoolVar(&flags.Debug, "debug", false, "Enable debug mode")
+	flag.Parse()
+
 	fmt.Println("hello, byelog")
 }
