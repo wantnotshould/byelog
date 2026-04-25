@@ -26,6 +26,7 @@ func (r *VisitLogRepository) CreateBulk(ctx context.Context, logs []*db.VisitLog
 	builders := make([]*db.VisitLogCreate, len(logs))
 	for i, l := range logs {
 		builders[i] = r.client.VisitLog.Create().
+			SetAppID(l.AppID).
 			SetIP(l.IP).
 			SetMethod(l.Method).
 			SetPath(l.Path).
