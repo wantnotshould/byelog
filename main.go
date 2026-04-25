@@ -9,12 +9,15 @@ import (
 	"fmt"
 
 	"github.com/wantnotshould/byelog/cmd/flags"
+	"github.com/wantnotshould/byelog/internal/bootstrap"
 )
 
 func main() {
 	flag.StringVar(&flags.Data, "data", "data", "Data directory")
 	flag.BoolVar(&flags.Debug, "debug", false, "Enable debug mode")
 	flag.Parse()
+
+	bootstrap.Run()
 
 	fmt.Println("hello, byelog")
 }

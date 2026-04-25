@@ -4,8 +4,12 @@
 
 package bootstrap
 
-import "github.com/wantnotshould/byelog/conf"
+import (
+	"github.com/wantnotshould/byelog/conf"
+	"github.com/wantnotshould/byelog/internal/logger"
+)
 
 func Run() {
 	conf.Init()
+	logger.Init(conf.Get().Logger)
 }
