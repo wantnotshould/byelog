@@ -44,6 +44,7 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
+          go mod tidy
           mkdir -p dist
           FILENAME=gt-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
           if [ "${{ matrix.goos }}" = "windows" ]; then
