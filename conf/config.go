@@ -264,8 +264,8 @@ func defaultConfig() *Config {
 		},
 		Kafka: Kafka{
 			Brokers:      []string{"127.0.0.1:9092"},
-			Topic:        "visit_log_topic",
-			GroupID:      "visit_log_group",
+			Topic:        "visit-log-topic",
+			GroupID:      "visit-log-group",
 			MaxAttempts:  3,
 			BatchSize:    100,
 			BatchTimeout: time.Second,
