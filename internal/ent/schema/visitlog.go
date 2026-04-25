@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
+	"github.com/google/uuid"
 )
 
 // VisitLog holds the schema definition for the VisitLog entity.
@@ -26,6 +27,9 @@ func (VisitLog) Annotations() []schema.Annotation {
 // Fields of the VisitLog.
 func (VisitLog) Fields() []ent.Field {
 	return []ent.Field{
+		field.UUID("app_id", uuid.UUID{}).
+			Comment("App ID"),
+
 		field.String("ip").
 			MaxLen(45).
 			Comment("Client IP address"),
@@ -96,6 +100,7 @@ func (VisitLog) Fields() []ent.Field {
 
 func (VisitLog) Indexes() []ent.Index {
 	return []ent.Index{
+		index.Fields("app_id"),
 		index.Fields("ip"),
 		index.Fields("created_at"),
 

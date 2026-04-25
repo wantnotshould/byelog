@@ -11,9 +11,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/mileusna/useragent"
 	"github.com/wantnotshould/byelog/internal/ent/db"
 	"github.com/wantnotshould/byelog/internal/logger"
+	"github.com/wantnotshould/byelog/internal/middleware"
 	"github.com/wantnotshould/byelog/internal/queue"
 	"github.com/wantnotshould/byelog/pkg/utils"
 )
@@ -27,7 +29,14 @@ func NewVisitLogHandler(p *queue.KafkaProducer) *VisitLogHandler {
 }
 
 func (h *VisitLogHandler) Collect(w http.ResponseWriter, r *http.Request) {
-	data := h.extractData(r)
+	var param struct {
+		Title string `json:"title"`
+	}
+	_ = json.NewDecoder(r.Body).Decode(&param)
+
+	appIDStr := r.Header.Get(middleware.HeaderAppID)
+	appID, _ := uuid.Parse(appIDStr)
+	data := h.extractData(r, appID, param.Title)
 
 	payload, _ := json.Marshal(data)
 
@@ -43,18 +52,19 @@ func (h *VisitLogHandler) Collect(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "ok")
 }
 
-func (h *VisitLogHandler) extractData(r *http.Request) *db.VisitLog {
+func (h *VisitLogHandler) extractData(r *http.Request, appID uuid.UUID, title string) *db.VisitLog {
 	uaRaw := r.UserAgent()
 	ua := useragent.Parse(uaRaw)
 	ip := utils.IP(r)
 
 	return &db.VisitLog{
+		AppID:          appID,
 		IP:             ip,
 		Method:         r.Method,
 		Path:           r.URL.Path,
 		Query:          r.URL.RawQuery,
 		Referer:        r.Referer(),
-		Title:          r.URL.Query().Get("title"),
+		Title:          title,
 		Os:             ua.OS,
 		Browser:        ua.Name,
 		BrowserVersion: ua.Version,
