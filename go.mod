@@ -5,8 +5,10 @@ go 1.26
 require (
 	entgo.io/ent v0.14.6
 	github.com/go-sql-driver/mysql v1.9.3
+	github.com/google/wire v0.7.0
 	github.com/redis/go-redis/v9 v9.18.0
 	go.uber.org/zap v1.27.1
+	golang.org/x/net v0.53.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
@@ -28,7 +30,7 @@ require (
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/mod v0.24.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/mod v0.34.0 // indirect
+	golang.org/x/text v0.36.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
