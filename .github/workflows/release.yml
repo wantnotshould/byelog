@@ -46,7 +46,7 @@ jobs:
         run: |
           go mod tidy
           mkdir -p dist
-          FILENAME=gt-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
+          FILENAME=byelog-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
           if [ "${{ matrix.goos }}" = "windows" ]; then
             FILENAME="${FILENAME}.exe"
           fi
