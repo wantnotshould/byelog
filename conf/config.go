@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -78,11 +79,22 @@ type Logger struct {
 	MaxAge     int    `json:"max_age"`
 }
 
+type Kafka struct {
+	Brokers      []string      `json:"brokers"`
+	Topic        string        `json:"topic"`
+	GroupID      string        `json:"group_id"`
+	MaxAttempts  int           `json:"max_attempts"`
+	BatchSize    int           `json:"batch_size"`
+	BatchTimeout time.Duration `json:"batch_timeout"`
+	Async        bool          `json:"async"`
+}
+
 type Config struct {
 	Scheme   Scheme   `json:"scheme"`
 	Redis    Redis    `json:"redis"`
 	Database Database `json:"database"`
 	Logger   Logger   `json:"logger"`
+	Kafka    Kafka    `json:"kafka"`
 }
 
 func (c *Config) validate() error {
@@ -162,6 +174,44 @@ func (c *Config) validate() error {
 		return utils.Err("logger max_age can't be negative")
 	}
 
+	if len(c.Kafka.Brokers) == 0 {
+		return utils.Err("kafka brokers list can't be empty")
+	}
+
+	if slices.Contains(c.Kafka.Brokers, "") {
+		return utils.Err("kafka broker address can't be empty")
+	}
+
+	for _, b := range c.Kafka.Brokers {
+		if !strings.Contains(b, ":") {
+			return utils.Err("kafka broker address format error, missing port (e.g., 127.0.0.1:9092)")
+		}
+	}
+
+	if c.Kafka.Topic == "" {
+		return utils.Err("kafka topic can't be empty")
+	}
+
+	if c.Kafka.GroupID == "" {
+		return utils.Err("kafka group_id can't be empty")
+	}
+
+	if c.Kafka.MaxAttempts < 0 {
+		return utils.Err("kafka max_attempts can't be negative")
+	}
+
+	if c.Kafka.BatchSize < 0 {
+		return utils.Err("kafka batch_size can't be negative")
+	}
+
+	if c.Kafka.BatchTimeout < 0 {
+		return utils.Err("kafka batch_timeout can't be negative")
+	}
+
+	if c.Kafka.BatchTimeout > 0 && c.Kafka.BatchTimeout < 10*time.Millisecond {
+		return utils.Err("kafka batch_timeout is too small, minimum is 10ms")
+	}
+
 	return nil
 }
 
@@ -211,6 +261,15 @@ func defaultConfig() *Config {
 			MaxSize:    50,
 			MaxBackups: 10,
 			MaxAge:     24,
+		},
+		Kafka: Kafka{
+			Brokers:      []string{"127.0.0.1:9092"},
+			Topic:        "visit_log_topic",
+			GroupID:      "visit_log_group",
+			MaxAttempts:  3,
+			BatchSize:    100,
+			BatchTimeout: time.Second,
+			Async:        true,
 		},
 	}
 }

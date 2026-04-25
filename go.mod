@@ -6,7 +6,9 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/google/wire v0.7.0
+	github.com/mileusna/useragent v1.3.5
 	github.com/redis/go-redis/v9 v9.18.0
+	github.com/segmentio/kafka-go v0.4.51
 	go.uber.org/zap v1.27.1
 	golang.org/x/net v0.53.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -24,7 +26,9 @@ require (
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.18.1 // indirect
+	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
+	github.com/pierrec/lz4/v4 v4.1.26 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
