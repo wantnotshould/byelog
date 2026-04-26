@@ -10,7 +10,7 @@ I started this project because I was sick of staring at endless `tail -f` logs i
 
 ## Why this?
 
-After the "clown moment," I figured: "Screw it, I'll just turn this into a side project to play with some cool tech."
+After the "clown moment," I figured: "Screw it, I'll just turn this into a learning project to play with some cool tech."
 
 It’s my personal playground for messing with Go, Kafka, and seeing how much data I can collect before I have to care about DB indexing.
 
