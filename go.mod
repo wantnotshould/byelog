@@ -10,6 +10,7 @@ require (
 	github.com/mileusna/useragent v1.3.5
 	github.com/redis/go-redis/v9 v9.18.0
 	github.com/segmentio/kafka-go v0.4.51
+	github.com/xiayoudi/ud v0.1.0
 	go.uber.org/zap v1.27.1
 	golang.org/x/net v0.53.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1

@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/wantnotshould/byelog/cmd/flags"
-	"github.com/wantnotshould/byelog/pkg/utils"
+	"github.com/xiayoudi/ud"
 )
 
 type Scheme struct {
@@ -99,117 +99,117 @@ type Config struct {
 
 func (c *Config) validate() error {
 	if c.Scheme.Port == "" || !strings.HasPrefix(c.Scheme.Port, ":") {
-		return utils.Err("scheme.Port is empty or format error")
+		return ud.Err("scheme.Port is empty or format error")
 	}
 
 	if c.Redis.Addr == "" {
-		return utils.Err("redis address can't be empty")
+		return ud.Err("redis address can't be empty")
 	}
 
 	if c.Redis.Prefix == "" {
-		return utils.Err("redis prefix can't be empty")
+		return ud.Err("redis prefix can't be empty")
 	}
 
 	if c.Redis.PoolSize <= 0 {
-		return utils.Err("redis pool_size must be > 0")
+		return ud.Err("redis pool_size must be > 0")
 	}
 
 	if c.Redis.MinIdleConns <= 0 {
-		return utils.Err("redis min_idle_conns must be > 0")
+		return ud.Err("redis min_idle_conns must be > 0")
 	}
 
 	if c.Redis.MaxRetries < 0 {
-		return utils.Err("redis max_retries must be >= 0")
+		return ud.Err("redis max_retries must be >= 0")
 	}
 
 	if c.Redis.DialTimeout <= 0 {
-		return utils.Err("redis dial_timeout must be > 0")
+		return ud.Err("redis dial_timeout must be > 0")
 	}
 
 	if c.Redis.ReadTimeout <= 0 {
-		return utils.Err("redis read_timeout must be > 0")
+		return ud.Err("redis read_timeout must be > 0")
 	}
 
 	if c.Redis.WriteTimeout <= 0 {
-		return utils.Err("redis write_timeout must be > 0")
+		return ud.Err("redis write_timeout must be > 0")
 	}
 
 	if c.Redis.PoolTimeout <= 0 {
-		return utils.Err("redis pool_timeout must be > 0")
+		return ud.Err("redis pool_timeout must be > 0")
 	}
 
 	if c.Database.Host == "" {
-		return utils.Err("database host can't be empty")
+		return ud.Err("database host can't be empty")
 	}
 
 	if c.Database.Port == "" {
-		return utils.Err("database port can't be empty")
+		return ud.Err("database port can't be empty")
 	}
 
 	if c.Database.User == "" {
-		return utils.Err("database user can't be empty")
+		return ud.Err("database user can't be empty")
 	}
 
 	if c.Database.Password == "" {
-		return utils.Err("database password can't be empty")
+		return ud.Err("database password can't be empty")
 	}
 
 	if c.Database.DBName == "" {
-		return utils.Err("database name can't be empty")
+		return ud.Err("database name can't be empty")
 	}
 
 	if c.Logger.LogsDir == "" {
-		return utils.Err("logger logs_dir can't be empty")
+		return ud.Err("logger logs_dir can't be empty")
 	}
 
 	if c.Logger.MaxSize <= 0 {
-		return utils.Err("logger max_size must be greater than 0")
+		return ud.Err("logger max_size must be greater than 0")
 	}
 
 	if c.Logger.MaxBackups < 0 {
-		return utils.Err("logger max_backups can't be negative")
+		return ud.Err("logger max_backups can't be negative")
 	}
 
 	if c.Logger.MaxAge < 0 {
-		return utils.Err("logger max_age can't be negative")
+		return ud.Err("logger max_age can't be negative")
 	}
 
 	if len(c.Kafka.Brokers) == 0 {
-		return utils.Err("kafka brokers list can't be empty")
+		return ud.Err("kafka brokers list can't be empty")
 	}
 
 	if slices.Contains(c.Kafka.Brokers, "") {
-		return utils.Err("kafka broker address can't be empty")
+		return ud.Err("kafka broker address can't be empty")
 	}
 
 	for _, b := range c.Kafka.Brokers {
 		if !strings.Contains(b, ":") {
-			return utils.Err("kafka broker address format error, missing port (e.g., 127.0.0.1:9092)")
+			return ud.Err("kafka broker address format error, missing port (e.g., 127.0.0.1:9092)")
 		}
 	}
 
 	if c.Kafka.Topic == "" {
-		return utils.Err("kafka topic can't be empty")
+		return ud.Err("kafka topic can't be empty")
 	}
 
 	if c.Kafka.GroupID == "" {
-		return utils.Err("kafka group_id can't be empty")
+		return ud.Err("kafka group_id can't be empty")
 	}
 
 	if c.Kafka.MaxAttempts < 0 {
-		return utils.Err("kafka max_attempts can't be negative")
+		return ud.Err("kafka max_attempts can't be negative")
 	}
 
 	if c.Kafka.BatchSize < 0 {
-		return utils.Err("kafka batch_size can't be negative")
+		return ud.Err("kafka batch_size can't be negative")
 	}
 
 	if c.Kafka.BatchTimeout < 0 {
-		return utils.Err("kafka batch_timeout can't be negative")
+		return ud.Err("kafka batch_timeout can't be negative")
 	}
 
 	if c.Kafka.BatchTimeout > 0 && c.Kafka.BatchTimeout < 10*time.Millisecond {
-		return utils.Err("kafka batch_timeout is too small, minimum is 10ms")
+		return ud.Err("kafka batch_timeout is too small, minimum is 10ms")
 	}
 
 	return nil
@@ -276,16 +276,16 @@ func defaultConfig() *Config {
 
 func load() error {
 	if fullPath == "" {
-		return utils.Err("config path not initialized, call Init() first")
+		return ud.Err("config path not initialized, call Init() first")
 	}
 
 	var newConfig Config
-	if err := utils.ReadJSON(fullPath, &newConfig); err != nil {
-		return utils.Wrap("failed to load config file", err)
+	if err := ud.ReadJSON(fullPath, &newConfig); err != nil {
+		return ud.Wrap(err, "failed to load config file")
 	}
 
 	if err := newConfig.validate(); err != nil {
-		return utils.Wrap("config validation failed", err)
+		return ud.Wrap(err, "config validation failed")
 	}
 
 	cfgPtr.Store(&newConfig)
@@ -304,7 +304,7 @@ func Init() {
 
 		if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 			def := defaultConfig()
-			if err := utils.WriteJSON(fullPath, &def); err != nil {
+			if err := ud.WriteJSON(fullPath, &def); err != nil {
 				log.Fatalf("failed to initialize config file: %v", err)
 			}
 			cfgPtr.Store(def)
