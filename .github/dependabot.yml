@@ -13,5 +13,4 @@ updates:
 
     groups:
       go:
-        patterns:
-          - "*"
+        dependency-type: "all"
