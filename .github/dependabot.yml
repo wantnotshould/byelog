@@ -10,7 +10,3 @@ updates:
 
     labels:
       - "dependencies"
-
-    groups:
-      go:
-        dependency-type: "all"
