@@ -1,0 +1,43 @@
+name: Dependabot Auto Generator
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.26
+
+      - name: Install dependencies and Generate code
+        run: |
+          go install entgo.io/ent/cmd/ent@latest
+          go install github.com/google/wire/cmd/wire@latest
+          
+          go generate ./internal/ent/...
+          
+          cd internal/wire && $(go env GOPATH)/bin/wire && cd ../..
+
+      - name: Update Go Dependencies
+        run: |
+          go get -u ./...
+          go mod tidy
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "mod: update go dependencies"
+          title: "mod: automated go dependency updates"
+          body: "This PR updates Go dependencies and regenerates ent/wire code automatically."
+          branch: "automation/dependabot-style-updates"
+          labels: "dependencies"
+          delete-branch: true
